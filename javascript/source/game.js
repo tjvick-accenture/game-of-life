@@ -35,7 +35,7 @@ export function expandGrid(grid) {
 
     return math.subset(
         math.zeros(nRows+2, nCols+2),
-        math.index([1, nRows], [1, nCols]),
+        math.index(math.range(1, nRows+1), math.range(1, nCols+1)),
         grid
     );
 }

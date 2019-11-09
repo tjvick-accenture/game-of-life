@@ -22,6 +22,24 @@ describe("Game of Life", function () {
 
             expect(output).toEqual(expectedOutput);
         });
+
+        it("Can do a 1-generation step on a 3x3 grid", function () {
+            let input = [
+                [1, 1, 1],
+                [0, 1, 0],
+                [0, 0, 0]
+            ];
+
+            let output = step(input);
+
+            let expectedOutput = [
+                [1, 1, 1],
+                [1, 1, 1],
+                [0, 0, 0]
+            ];
+
+            expect(output).toEqual(expectedOutput);
+        });
     });
 
     describe("liveOrDie", function () {

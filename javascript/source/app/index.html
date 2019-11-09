@@ -3,8 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <title>Game of Life!</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>Game of Life!</h1>
+    <p>This is the simplest web page I can make to run this game. Using D3.js</p>
+    <div id="gameboard"></div>
+    <button id="stepBtn">Step</button>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script>
+        let gridData = [[1, 1, 1, 0], [1, 0, 0, 1], [0, 0, 1, 0], [0, 0, 1, 0]];
+        let bbox = d3.select("#gameboard").node().getBoundingClientRect();
+        let cellHeight = bbox.height / gridData.length;
+        let cellWidth = bbox.width / gridData[0].length;
 
+        var gridElement = d3
+            .select("#gameboard")
+            .append("svg")
+            .attr("width", "100%")
+            .attr("height", "100%");
+
+        var row = gridElement
+            .selectAll(".row")
+            .data(gridData)
+            .enter()
+            .append("g")
+            .attr("class", "row")
+            .attr("transform", function (d, i) {return `translate(0,${cellHeight*i})`})
+            .attr("height", `${cellHeight}`);
+
+        var column = row
+            .selectAll(".cell")
+            .data(function(d) {return d;})
+            .enter()
+            .append('rect')
+            .attr("class", "cell")
+            .attr("x", function(d, i) {return `${cellWidth*i}`})
+            .attr("width", function () {return `${cellWidth}`})
+            .attr("height", function () {return `${cellHeight}`})
+            .style("fill", function(d) {return d === 1 ? "#000" : "#fff"})
+            .style("stroke", "#222");
+
+        d3
+            .select("#stepBtn")
+            .on("click", step);
+
+        function updateGridData() {
+            const gameboard = d3
+                .select('#gameboard');
+
+            row = gameboard
+                .selectAll(".row")
+                .data(gridData);
+
+            var cell = row
+                .selectAll(".cell")
+                .data(function(d) {return d;});
+
+            cell.transition()
+                .duration(100)
+                .style("fill", function(d) {return d === 1 ? "#000" : "#fff";})
+        }
+
+        function step() {
+            return d3.json("/step", {
+                method: "POST",
+                body: JSON.stringify(gridData),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+                .then(json => {
+                    gridData = json;
+                    updateGridData();
+                });
+        }
+    </script>
 </body>
 </html>
