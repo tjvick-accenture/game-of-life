@@ -1,9 +1,25 @@
 import * as math from 'mathjs';
 
 export function step(inputGrid) {
-    countLivingNeighbors(inputGrid);
+    let nLivingNeighbors = countLivingNeighbors(inputGrid);
     // for each cell: determine if live or die (isLiving, nLivingNeighbors)
-    return inputGrid;
+    return liveOrDieGrid(inputGrid, nLivingNeighbors);
+}
+
+export function liveOrDieGrid(inputGrid, nLivingNeighbors) {
+    return inputGrid.map((row, ir) => row.map((el, ic) => liveOrDieCell(el, nLivingNeighbors[ir][ic])));
+}
+
+export function liveOrDieCell(isLiving, nLivingNeighbors) {
+    if (!isLiving && nLivingNeighbors === 3) {
+        return 1;
+    }
+
+    if (isLiving && (nLivingNeighbors === 2 || nLivingNeighbors === 3)) {
+        return 1;
+    }
+
+    return 0;
 }
 
 export function countLivingNeighbors(inputGrid) {
